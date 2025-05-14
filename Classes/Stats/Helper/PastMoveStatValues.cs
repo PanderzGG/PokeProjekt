@@ -13,13 +13,13 @@ namespace PokeDex.Classes.Stats.Helper
     public class PastMoveStatValues
     {
         [JsonPropertyName("accuracy")]
-        public int Accuracy { get; set; }
+        public int? Accuracy { get; set; }
         [JsonPropertyName("effect_chance")]
-        public int EffectChance { get; set; }
+        public int? EffectChance { get; set; }
         [JsonPropertyName("power")]
-        public int Power { get; set; }
+        public int? Power { get; set; }
         [JsonPropertyName("pp")]
-        public int PP { get; set; }
+        public int? PP { get; set; }
         [JsonPropertyName("effect_entries")]
         public List<VerboseEffect>? EffectEntries { get; set; }
         [JsonPropertyName("type")]

@@ -10,8 +10,8 @@ namespace PokeDex.Classes.Contests
     public class ContestComboSets
     {
         [JsonPropertyName("normal")]
-        public ContestComboDetail Normal { get; set; }
+        public ContestComboDetail? Normal { get; set; }
         [JsonPropertyName("super")]
-        public ContestComboDetail Super { get; set; }
+        public ContestComboDetail? Super { get; set; }
     }
 }

@@ -11,8 +11,8 @@ namespace PokeDex.Classes.Contests
     public class ContestComboDetail
     {
         [JsonPropertyName("use_before")]
-        public Move UseBefore { get; set; }
+        public Move? UseBefore { get; set; }
         [JsonPropertyName("use_after")]
-        public Move UseAfter { get; set; }
+        public Move? UseAfter { get; set; }
     }
 }

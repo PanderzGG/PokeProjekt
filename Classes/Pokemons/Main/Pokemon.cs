@@ -6,8 +6,10 @@ using PokeDex.Classes.Types.Helper;
 using PokeDex.Classes.Types.Main;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -74,5 +76,49 @@ namespace PokeDex.Classes.Pokemons.Main
 
         [JsonPropertyName("types")]
         public List<PokemonType> Types { get; set; }
+
+
+
+        public Pokemon DeserializeResponse(string response)
+        {
+            Pokemon pokemon = new Pokemon();
+
+            try
+            {
+                pokemon = JsonSerializer.Deserialize<Pokemon>(response, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error deserializing Pokemon: " + ex.Message);
+                return null;
+            }
+
+            return pokemon;
+        }
+
+        public string PokeName()
+        {
+            string name = this.Name;
+            string pokeName = char.ToUpper(name[0]) + name.Substring(1);
+            return pokeName;
+        }
+
+        public string PokeWeight()
+        {
+            double weight = this.Weight / 10.0;
+            string weightString = weight.ToString("N1", new CultureInfo("en-EN")) + " Meter";
+            return weightString;
+        }
+
+        public string PokeHeight()
+        {
+            double height = this.Height / 10.0;
+            string heightString = height.ToString("N1", new CultureInfo("en-EN")) + " Kilogram";
+            return heightString;
+        }
     }
 }

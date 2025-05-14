@@ -1,4 +1,7 @@
-﻿using PokeDex.Classes.Pokemons.Main;
+﻿using PokeDex.Classes.Moves.Main;
+using PokeDex.Classes.Pokemons.Helper;
+using PokeDex.Classes.Pokemons.Main;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -11,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfAnimatedGif;
 
 namespace PokeDex
 {
@@ -21,22 +25,26 @@ namespace PokeDex
     {
         static readonly HttpClient _client = new HttpClient();
         static Pokemon? _Pokemon = new Pokemon();
+        static bool isMale = true;
+        static bool isShiny = false;
         public MainWindow()
         {
             InitializeComponent();
             CheckConnection();
+            PikaLoadHide();
+            
         }
 
         private async void CheckConnection()
         {
             try
             {
-                string url = "https://www.google.de";
+                string url = "https://pokeapi.co/api/v2/pokemon/pikachu";
                 var response = await _client.GetAsync(url);
 
                 if (response.StatusCode.ToString() == "OK")
                 {
-                    MessageBox.Show("Connection is OK");
+                    //MessageBox.Show("Connection is OK");
                 }
                 else
                 {
@@ -57,15 +65,25 @@ namespace PokeDex
             string url = $"https://pokeapi.co/api/v2/pokemon/{pokeName}";
             string? response = null;
 
-            PokePicture.Source = null;
+            var mewLoad = new BitmapImage();
+            mewLoad.BeginInit();
+            mewLoad.UriSource = new Uri("C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\mewload.gif");
+            mewLoad.EndInit();
+            ImageBehavior.SetAnimatedSource(PokePicture, mewLoad);
 
-            while(response == null)
+            LoadingPika1.Visibility = Visibility.Visible;
+            LoadingPika2.Visibility = Visibility.Visible;
+            LoadingPika3.Visibility = Visibility.Visible;
+            LoadingPika4.Visibility = Visibility.Visible;
+
+            while (response == null)
             {
-                TextPokemonNumberValue.Text = "Loading...";
-                TextPokemonNameValue.Text = "Loading...";
-                TextPokemonHeightValue.Text = "Loading...";
-                TextPokemonWeightValue.Text = "Loading...";
-
+                
+                TextPokemonNumberValue.Text = "";
+                TextPokemonNameValue.Text = "";
+                TextPokemonHeightValue.Text = "";
+                TextPokemonWeightValue.Text = "";
+                
                 try
                 {
                     response = await _client.GetStringAsync(url);
@@ -79,7 +97,7 @@ namespace PokeDex
             
             try
             {
-                _Pokemon = JsonSerializer.Deserialize<Pokemon>(response);
+                _Pokemon = _Pokemon.DeserializeResponse(response);
 
             }
             catch (Exception ex)
@@ -87,14 +105,176 @@ namespace PokeDex
                 MessageBox.Show($"Can't resolve a response {ex.ToString()}");
             }
 
-            TextPokemonNumberValue.Text = _Pokemon.Id.ToString();
-            TextPokemonNameValue.Text = _Pokemon.Name.ToString();
-            TextPokemonHeightValue.Text = _Pokemon.Height.ToString();
-            TextPokemonWeightValue.Text = _Pokemon.Weight.ToString();
+            var Artwork = new BitmapImage();
+            Artwork.BeginInit();
+            Artwork.UriSource = new Uri(_Pokemon.Sprites.FrontDefault);
+            Artwork.EndInit();
+            ImageBehavior.SetAnimatedSource(PokePicture, Artwork);
 
-            foreach(var move in _Pokemon.Moves)
+            TextPokemonNumberValue.Text = _Pokemon.Id.ToString();
+            TextPokemonNameValue.Text = _Pokemon.PokeName();
+            TextPokemonHeightValue.Text = _Pokemon.PokeHeight();
+            TextPokemonWeightValue.Text = _Pokemon.PokeWeight();
+            LoadingPika1.Visibility = Visibility.Hidden;
+            LoadingPika2.Visibility = Visibility.Hidden;
+            LoadingPika3.Visibility = Visibility.Hidden;
+            LoadingPika4.Visibility = Visibility.Hidden;
+
+            ListBoxAbilities.Items.Clear();
+            foreach (var move in _Pokemon.Moves)
             {
                 ListBoxAbilities.Items.Add(move.Move.Name);
+            }
+        }
+
+        private async void ListBoxAbilities_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string selectedMove = ListBoxAbilities.SelectedItem.ToString();
+            string url = $"https://pokeapi.co/api/v2/move/{selectedMove}";
+            string? response = null;
+            PokemonMove? currentMoveSet = _Pokemon.Moves.FirstOrDefault(x => x.Move.Name == selectedMove);
+
+            Move? currentMove = new Move();
+
+            try
+            {
+                response = await _client.GetStringAsync(url);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Can't resolve a response {ex.ToString()}");
+                
+            }
+
+            if (!string.IsNullOrWhiteSpace(response))
+            {
+                try
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        MaxDepth = 96,
+                        ReadCommentHandling = JsonCommentHandling.Skip,
+                        AllowTrailingCommas = true
+                    };
+                    currentMove = JsonSerializer.Deserialize<Move>(response, options);
+                    response = null;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Fehler beim Deserialisieren: {ex.Message}\nResponse:\n{response}");
+                    Clipboard.SetText(ex.Message);
+                    MessageBox.Show("Response wurde in die Zwischenablage kopiert.");
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Die API-Antwort ist leer.");
+                return;
+            }
+
+            if (currentMove != null)
+            {
+                TextMoveNameValue.Text = currentMove.Name.ToString();
+                TextMovePPValue.Text = currentMove.PP.ToString();
+                TextMovePowerValue.Text = currentMove.Power.ToString();
+                TextMoveAccuracyValue.Text = currentMove.Accuracy.ToString();
+            }
+        }
+
+        private void PikaLoadHide()
+        {
+            LoadingPika1.Visibility = Visibility.Hidden;
+            LoadingPika2.Visibility = Visibility.Hidden;
+            LoadingPika3.Visibility = Visibility.Hidden;
+            LoadingPika4.Visibility = Visibility.Hidden;
+        }
+
+        private void PokeSearchbox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            PokeSearchbox.Clear();
+        }
+
+        private void ButtonShiny_Click(object sender, RoutedEventArgs e)
+        {
+            isShiny = true;
+            PictureLoading();
+        }
+
+        private void ButtonMaleSprite_Click(object sender, RoutedEventArgs e)
+        {
+            isMale = true;
+            PictureLoading();
+
+        }
+
+        private void ButtonFemaleSprite_Click(object sender, RoutedEventArgs e)
+        {
+            isMale = false;
+            PictureLoading();
+
+        }        
+
+        private void ButtonNormalSprite_Click(object sender, RoutedEventArgs e)
+        {
+            isShiny = false;
+            PictureLoading();
+        }
+
+        private void PictureLoading()
+        {
+            switch (isShiny)
+            {
+                case true:
+                    if (isMale)
+                    {
+                        var maleShiny = new BitmapImage();
+                        maleShiny.BeginInit();
+                        maleShiny.UriSource = new Uri(_Pokemon.Sprites.FrontShiny);
+                        maleShiny.EndInit();
+                        PokePicture.Source = maleShiny;
+                    }
+                    else if (!isMale && _Pokemon.Sprites.FrontShinyFemale != null)
+                    {
+                        var femaleShiny = new BitmapImage();
+                        femaleShiny.BeginInit();
+                        femaleShiny.UriSource = new Uri(_Pokemon.Sprites.FrontShinyFemale);
+                        femaleShiny.EndInit();
+                        PokePicture.Source = femaleShiny;
+                    }
+                    else
+                    {
+                        MessageBox.Show("No Shiny Female variant.");
+                        isMale = true;
+                        PictureLoading();
+                        return;
+                    }
+                    break;
+                case false:
+                    if (isMale)
+                    {
+                        var maleNormal = new BitmapImage();
+                        maleNormal.BeginInit();
+                        maleNormal.UriSource = new Uri(_Pokemon.Sprites.FrontDefault);
+                        maleNormal.EndInit();
+                        PokePicture.Source = maleNormal;
+                    }
+                    else if (!isMale)
+                    {
+                        var femaleNormal = new BitmapImage();
+                        femaleNormal.BeginInit();
+                        femaleNormal.UriSource = new Uri(_Pokemon.Sprites.FrontFemale);
+                        femaleNormal.EndInit();
+                        PokePicture.Source = femaleNormal;
+                    }
+                    else
+                    {
+                        MessageBox.Show("No Female variant.");
+                        isMale = true;
+                        PictureLoading();
+                        return;
+                    }
+                    break;
             }
         }
     }
