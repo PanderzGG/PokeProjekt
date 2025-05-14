@@ -90,7 +90,10 @@ namespace PokeDex
                 }
                 catch(Exception ex)
                 {
-                    MessageBox.Show("Can't resolve a response" + ex);
+                    MessageBox.Show($"{pokeName} does not exist.");
+                    PikaLoadHide();
+                    ImageBehavior.SetAnimatedSource(PokePicture, null);
+                    ListBoxAbilities.Items.Clear();
                     return;
                 }
             }
@@ -115,10 +118,7 @@ namespace PokeDex
             TextPokemonNameValue.Text = _Pokemon.PokeName();
             TextPokemonHeightValue.Text = _Pokemon.PokeHeight();
             TextPokemonWeightValue.Text = _Pokemon.PokeWeight();
-            LoadingPika1.Visibility = Visibility.Hidden;
-            LoadingPika2.Visibility = Visibility.Hidden;
-            LoadingPika3.Visibility = Visibility.Hidden;
-            LoadingPika4.Visibility = Visibility.Hidden;
+            PikaLoadHide();
 
             ListBoxAbilities.Items.Clear();
             foreach (var move in _Pokemon.Moves)
@@ -129,7 +129,13 @@ namespace PokeDex
 
         private async void ListBoxAbilities_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectedMove = ListBoxAbilities.SelectedItem.ToString();
+            string selectedMove = "";
+
+            if(ListBoxAbilities.SelectedItem != null)
+            {
+                selectedMove = ListBoxAbilities.SelectedItem.ToString();
+            }
+            
             string url = $"https://pokeapi.co/api/v2/move/{selectedMove}";
             string? response = null;
             PokemonMove? currentMoveSet = _Pokemon.Moves.FirstOrDefault(x => x.Move.Name == selectedMove);
@@ -173,7 +179,7 @@ namespace PokeDex
                 return;
             }
 
-            if (currentMove != null)
+            if (currentMove.Name != null)
             {
                 TextMoveNameValue.Text = currentMove.Name.ToString();
                 TextMovePPValue.Text = currentMove.PP.ToString();
