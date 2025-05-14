@@ -20,5 +20,7 @@ namespace PokeDex.Classes.Pokemons.Helper
         public string? BackFemale { get; set; }
         [JsonPropertyName("back_shiny_female")]
         public string? BackShinyFemale { get; set; }
+
+        public OtherSprites Other { get; set; }
     }
 }

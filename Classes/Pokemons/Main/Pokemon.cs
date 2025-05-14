@@ -12,6 +12,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace PokeDex.Classes.Pokemons.Main
 {
@@ -119,6 +121,46 @@ namespace PokeDex.Classes.Pokemons.Main
             double height = this.Height / 10.0;
             string heightString = height.ToString("N1", new CultureInfo("en-EN")) + " Kilogram";
             return heightString;
+        }
+
+        public int PreviousPokemon()
+        {
+            int thisNumber = this.Id;
+            int previousNumber = thisNumber - 1;
+            if (previousNumber < 1)
+            {
+                previousNumber = 1;
+            }
+            return previousNumber;
+        }
+
+        public int NextPokemon()
+        {
+            int thisNumber = this.Id;
+            int nextNumber = thisNumber + 1;
+            if (nextNumber > 1025)
+            {
+                nextNumber = 1025;
+            }
+            return nextNumber;
+        }
+
+        public BitmapImage getImage(string picUrl)
+        {
+            BitmapImage pokePic = new BitmapImage();
+
+            try
+            {
+                pokePic.BeginInit();
+                pokePic.UriSource = new Uri(picUrl);
+                pokePic.EndInit();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Couldn't resolve Image");
+            }
+
+            return pokePic;
         }
     }
 }

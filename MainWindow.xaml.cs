@@ -61,70 +61,7 @@ namespace PokeDex
         private async void Search_Pokemon_Click(object sender, RoutedEventArgs e)
         {
             string pokeName = PokeSearchbox.Text.ToString().ToLower();
-            string? picUrl;
-            string url = $"https://pokeapi.co/api/v2/pokemon/{pokeName}";
-            string? response = null;
-
-            var mewLoad = new BitmapImage();
-            mewLoad.BeginInit();
-            mewLoad.UriSource = new Uri("C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\mewload.gif");
-            mewLoad.EndInit();
-            ImageBehavior.SetAnimatedSource(PokePicture, mewLoad);
-
-            LoadingPika1.Visibility = Visibility.Visible;
-            LoadingPika2.Visibility = Visibility.Visible;
-            LoadingPika3.Visibility = Visibility.Visible;
-            LoadingPika4.Visibility = Visibility.Visible;
-
-            while (response == null)
-            {
-                
-                TextPokemonNumberValue.Text = "";
-                TextPokemonNameValue.Text = "";
-                TextPokemonHeightValue.Text = "";
-                TextPokemonWeightValue.Text = "";
-                
-                try
-                {
-                    response = await _client.GetStringAsync(url);
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show($"{pokeName} does not exist.");
-                    PikaLoadHide();
-                    ImageBehavior.SetAnimatedSource(PokePicture, null);
-                    ListBoxAbilities.Items.Clear();
-                    return;
-                }
-            }
-            
-            try
-            {
-                _Pokemon = _Pokemon.DeserializeResponse(response);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Can't resolve a response {ex.ToString()}");
-            }
-
-            var Artwork = new BitmapImage();
-            Artwork.BeginInit();
-            Artwork.UriSource = new Uri(_Pokemon.Sprites.FrontDefault);
-            Artwork.EndInit();
-            ImageBehavior.SetAnimatedSource(PokePicture, Artwork);
-
-            TextPokemonNumberValue.Text = _Pokemon.Id.ToString();
-            TextPokemonNameValue.Text = _Pokemon.PokeName();
-            TextPokemonHeightValue.Text = _Pokemon.PokeHeight();
-            TextPokemonWeightValue.Text = _Pokemon.PokeWeight();
-            PikaLoadHide();
-
-            ListBoxAbilities.Items.Clear();
-            foreach (var move in _Pokemon.Moves)
-            {
-                ListBoxAbilities.Items.Add(move.Move.Name);
-            }
+            SearchPokemon(pokeName);
         }
 
         private async void ListBoxAbilities_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -234,19 +171,23 @@ namespace PokeDex
                 case true:
                     if (isMale)
                     {
-                        var maleShiny = new BitmapImage();
-                        maleShiny.BeginInit();
-                        maleShiny.UriSource = new Uri(_Pokemon.Sprites.FrontShiny);
-                        maleShiny.EndInit();
-                        PokePicture.Source = maleShiny;
+                        string picUrl = _Pokemon.Sprites.FrontShiny;
+                        PokePicture.Source = _Pokemon.getImage(picUrl);
+                        //var maleShiny = new BitmapImage();
+                        //maleShiny.BeginInit();
+                        //maleShiny.UriSource = new Uri(_Pokemon.Sprites.FrontShiny);
+                        //maleShiny.EndInit();
+                        //PokePicture.Source = maleShiny;
                     }
                     else if (!isMale && _Pokemon.Sprites.FrontShinyFemale != null)
                     {
-                        var femaleShiny = new BitmapImage();
-                        femaleShiny.BeginInit();
-                        femaleShiny.UriSource = new Uri(_Pokemon.Sprites.FrontShinyFemale);
-                        femaleShiny.EndInit();
-                        PokePicture.Source = femaleShiny;
+                        string picUrl = _Pokemon.Sprites.FrontShinyFemale;
+                        PokePicture.Source = _Pokemon.getImage(picUrl);
+                        //var femaleShiny = new BitmapImage();
+                        //femaleShiny.BeginInit();
+                        //femaleShiny.UriSource = new Uri(_Pokemon.Sprites.FrontShinyFemale);
+                        //femaleShiny.EndInit();
+                        //PokePicture.Source = femaleShiny;
                     }
                     else
                     {
@@ -259,19 +200,23 @@ namespace PokeDex
                 case false:
                     if (isMale)
                     {
-                        var maleNormal = new BitmapImage();
-                        maleNormal.BeginInit();
-                        maleNormal.UriSource = new Uri(_Pokemon.Sprites.FrontDefault);
-                        maleNormal.EndInit();
-                        PokePicture.Source = maleNormal;
+                        string picUrl = _Pokemon.Sprites.FrontDefault;
+                        PokePicture.Source = _Pokemon.getImage(picUrl);
+                        //var maleNormal = new BitmapImage();
+                        //maleNormal.BeginInit();
+                        //maleNormal.UriSource = new Uri(_Pokemon.Sprites.FrontDefault);
+                        //maleNormal.EndInit();
+                        //PokePicture.Source = maleNormal;
                     }
                     else if (!isMale)
                     {
-                        var femaleNormal = new BitmapImage();
-                        femaleNormal.BeginInit();
-                        femaleNormal.UriSource = new Uri(_Pokemon.Sprites.FrontFemale);
-                        femaleNormal.EndInit();
-                        PokePicture.Source = femaleNormal;
+                        string picUrl = _Pokemon.Sprites.FrontFemale;
+                        PokePicture.Source = _Pokemon.getImage(picUrl);
+                        //var femaleNormal = new BitmapImage();
+                        //femaleNormal.BeginInit();
+                        //femaleNormal.UriSource = new Uri(_Pokemon.Sprites.FrontFemale);
+                        //femaleNormal.EndInit();
+                        //PokePicture.Source = femaleNormal;
                     }
                     else
                     {
@@ -282,6 +227,131 @@ namespace PokeDex
                     }
                     break;
             }
+        }
+
+        private void ButtonNextPokemon_Click(object sender, RoutedEventArgs e)
+        {
+            int? nextPokemon = _Pokemon.NextPokemon();
+            if(nextPokemon != null)
+            {
+                SearchPokemon(nextPokemon.ToString());
+            }
+            else
+            {
+                MessageBox.Show("No next Pokemon.");
+            }
+        }
+
+        private void ButtonPreviousPokemon_Click(object sender, RoutedEventArgs e)
+        {
+            int? previousPokemon = _Pokemon.PreviousPokemon();
+            if (previousPokemon != null)
+            {
+                SearchPokemon(previousPokemon.ToString());
+            }
+            else
+            {
+                MessageBox.Show("No previous Pokemon.");
+            }
+        }
+
+        private async void SearchPokemon(string pokeName)
+        {
+            string? picUrl;
+            string url = $"https://pokeapi.co/api/v2/pokemon/{pokeName}";
+            string? response = null;
+
+            var mewLoad = new BitmapImage();
+            mewLoad.BeginInit();
+            mewLoad.UriSource = new Uri("C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\mewload.gif");
+            mewLoad.EndInit();
+            ImageBehavior.SetAnimatedSource(PokePicture, mewLoad);
+
+            LoadingPika1.Visibility = Visibility.Visible;
+            LoadingPika2.Visibility = Visibility.Visible;
+            LoadingPika3.Visibility = Visibility.Visible;
+            LoadingPika4.Visibility = Visibility.Visible;
+
+            while (response == null)
+            {
+
+                TextPokemonNumberValue.Text = "";
+                TextPokemonNameValue.Text = "";
+                TextPokemonHeightValue.Text = "";
+                TextPokemonWeightValue.Text = "";
+
+                try
+                {
+                    response = await _client.GetStringAsync(url);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"{pokeName} does not exist.");
+                    PikaLoadHide();
+                    ImageBehavior.SetAnimatedSource(PokePicture, null);
+                    ListBoxAbilities.Items.Clear();
+                    TextMoveAccuracyValue.Text = "";
+                    TextMoveNameValue.Text = "";
+                    TextMovePowerValue.Text = "";
+                    TextMovePPValue.Text = "";
+                    return;
+                }
+            }
+
+            try
+            {
+                _Pokemon = new Pokemon();
+                _Pokemon = _Pokemon.DeserializeResponse(response);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Can't resolve a response {ex.ToString()}");
+            }
+
+            var sprite = new BitmapImage();
+            sprite.BeginInit();
+            if(_Pokemon.Sprites.FrontDefault != null)
+            {
+                sprite.UriSource = new Uri(_Pokemon.Sprites.Other.OfficialArtwork.FrontDefault);
+            }
+            else
+            {
+                sprite.UriSource = new Uri("https://pokeapi.co/api/v2/item/1/");
+            }
+            sprite.EndInit();
+            ImageBehavior.SetAnimatedSource(PokePicture, sprite);
+
+            TextPokemonNumberValue.Text = _Pokemon.Id.ToString();
+            TextPokemonNameValue.Text = _Pokemon.PokeName();
+            TextPokemonHeightValue.Text = _Pokemon.PokeHeight();
+            TextPokemonWeightValue.Text = _Pokemon.PokeWeight();
+            PikaLoadHide();
+
+            ListBoxAbilities.Items.Clear();
+            foreach (var move in _Pokemon.Moves)
+            {
+                ListBoxAbilities.Items.Add(move.Move.Name);
+            }
+
+            PokeSearchbox.Text = _Pokemon.Name.ToString();
+            ListBoxAbilities.SelectedIndex = 0;
+        }
+
+        private void ButtonArtwork_Click(object sender, RoutedEventArgs e)
+        {
+            if (_Pokemon.Sprites.Other.OfficialArtwork.FrontDefault != null)
+            {
+                string picUrl = _Pokemon.Sprites.Other.OfficialArtwork.FrontDefault;
+                PokePicture.Source = _Pokemon.getImage(picUrl);
+
+            }
+            else
+            {
+                MessageBox.Show("No official artwork available.");
+                return;
+            }
+
         }
     }
 }

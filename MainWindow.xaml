@@ -217,22 +217,22 @@
 
                         <TextBlock Text="Number:" Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
                         <TextBlock x:Name="TextPokemonNumberValue" Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
-                        <Image x:Name="LoadingPika1" Grid.Row="1" Grid.Column="2" Height="24" Width="24" VerticalAlignment="Center" HorizontalAlignment="Left"
+                        <Image x:Name="LoadingPika1" Grid.Row="1" Grid.Column="2" Height="35" Width="50" VerticalAlignment="Center" HorizontalAlignment="Left"
                                gif:ImageBehavior.AnimatedSource="C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\pikaload.gif"
                                gif:ImageBehavior.AutoStart="True" Margin="5,0,0,0" Visibility="Collapsed"/>
                         <TextBlock Text="Name:" Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
                         <TextBlock x:Name="TextPokemonNameValue" Grid.Row="2" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
-                        <Image x:Name="LoadingPika2" Grid.Row="2" Grid.Column="2" Height="24" Width="24" VerticalAlignment="Center" HorizontalAlignment="Left"
+                        <Image x:Name="LoadingPika2" Grid.Row="2" Grid.Column="2" Height="35" Width="50" VerticalAlignment="Center" HorizontalAlignment="Left"
                                gif:ImageBehavior.AnimatedSource="C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\pikaload.gif"
                                gif:ImageBehavior.AutoStart="True" Margin="5,0,0,0" Visibility="Collapsed"/>
                         <TextBlock Text="Height:" Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
                         <TextBlock x:Name="TextPokemonHeightValue" Grid.Row="3" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
-                        <Image x:Name="LoadingPika3" Grid.Row="3" Grid.Column="2" Height="24" Width="24" VerticalAlignment="Center" HorizontalAlignment="Left"
+                        <Image x:Name="LoadingPika3" Grid.Row="3" Grid.Column="2" Height="35" Width="50" VerticalAlignment="Center" HorizontalAlignment="Left"
                                gif:ImageBehavior.AnimatedSource="C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\pikaload.gif"
                                gif:ImageBehavior.AutoStart="True" Margin="5,0,0,0" Visibility="Collapsed"/>
                         <TextBlock Text="Weight:" Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
                         <TextBlock x:Name="TextPokemonWeightValue" Grid.Row="4" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
-                        <Image x:Name="LoadingPika4" Grid.Row="4" Grid.Column="2" Height="24" Width="24" VerticalAlignment="Center" HorizontalAlignment="Left"
+                        <Image x:Name="LoadingPika4" Grid.Row="4" Grid.Column="2" Height="35" Width="50" VerticalAlignment="Center" HorizontalAlignment="Left"
                                gif:ImageBehavior.AnimatedSource="C:\\Users\\sasch\\source\\repos\\PokeDex\\PokeDex\\Media\\Loading\\pikaload.gif"
                                gif:ImageBehavior.AutoStart="True" Margin="5,0,0,0" Visibility="Collapsed"/>
                     </Grid>
@@ -254,7 +254,7 @@
                             </Grid.ColumnDefinitions>
 
                             <ListBox x:Name="ListBoxAbilities" Grid.Column="0" Margin="0,0,15,0" 
-                                     MinHeight="200" MaxHeight="300" Style="{StaticResource StyledListBox}"
+                                     MinHeight="200" MaxHeight="200" Style="{StaticResource StyledListBox}"
                                      SelectionChanged="ListBoxAbilities_SelectionChanged"/>
 
                             <Grid Grid.Column="1">
@@ -269,21 +269,25 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Name:" Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
-                                <TextBlock x:Name="TextMoveNameValue" Grid.Row="0" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
+                                <TextBlock Text="Name:" Grid.Row="0" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5" Width="175"/>
+                                <TextBlock x:Name="TextMoveNameValue" Grid.Row="1" Grid.Column="0" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
 
-                                <TextBlock Text="Accuracy:" Grid.Row="1" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
+                                <TextBlock Text="Accuracy:" Grid.Row="0" Grid.Column="1" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
                                 <TextBlock x:Name="TextMoveAccuracyValue" Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
 
                                 <TextBlock Text="PP:" Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
-                                <TextBlock x:Name="TextMovePPValue" Grid.Row="2" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
+                                <TextBlock x:Name="TextMovePPValue" Grid.Row="3" Grid.Column="0" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
 
-                                <TextBlock Text="Power:" Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
+                                <TextBlock Text="Power:" Grid.Row="2" Grid.Column="1" Style="{StaticResource LabelTextStyle}" Margin="0,5,10,5"/>
                                 <TextBlock x:Name="TextMovePowerValue" Grid.Row="3" Grid.Column="1" Style="{StaticResource ValueTextStyle}" Margin="0,5,0,5"/>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Border>
+                <Grid Height="100">
+                    <Button Grid.Row="0" Grid.Column="0" x:Name="ButtonPreviousPokemon" Content="Previous Pokemon" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,400,62" Click="ButtonPreviousPokemon_Click"/>
+                    <Button Grid.Row="0" x:Name="ButtonNextPokemon" Content="Next Pokemon" Style="{StaticResource SecondaryButtonStyle}" Margin="427,0,0,62" Click="ButtonNextPokemon_Click"/>
+                </Grid>
             </StackPanel>
 
             <Grid Grid.Column="1">
@@ -293,18 +297,19 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource CardBorderStyle}" Padding="10" Margin="0,0,0,15">
-                    <Image x:Name="PokePicture" Stretch="Uniform" MinHeight="300"/>
+                    <Image x:Name="PokePicture" Stretch="Uniform" MinHeight="300" Margin="39,20,39,20"/>
                 </Border>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-                    <Button Content="Artwork" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0"/>
-                    <Button x:Name="ButtonNormalSprite" Content="Sprite" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Click="ButtonNormalSprite_Click"/>
-                    <Button x:Name="ButtonShiny" Content="Shiny" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Click="ButtonShiny_Click"/>
-                    <Button x:Name="ButtonMaleSprite" Content="Male" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Click="ButtonMaleSprite_Click"/>
-                    <Button x:Name="ButtonFemaleSprite" Content="Female" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Click="ButtonFemaleSprite_Click"/>
+                    <Button x:Name="ButtonArtwork" Content="Artwork" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Width="90" Click="ButtonArtwork_Click"/>
+                    <Button x:Name="ButtonNormalSprite" Content="Sprite" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Width="90" Click="ButtonNormalSprite_Click"/>
+                    <Button x:Name="ButtonShiny" Content="Shiny" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Width="90" Click="ButtonShiny_Click"/>
+                    <Button x:Name="ButtonMaleSprite" Content="Male" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Width="90" Click="ButtonMaleSprite_Click"/>
+                    <Button x:Name="ButtonFemaleSprite" Content="Female" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0" Width="90" Click="ButtonFemaleSprite_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
+
     </Grid>
 </Window>
     
